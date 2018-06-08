@@ -14,6 +14,6 @@
 
 //typedef struct		s_corewar
 //{
-//}					t_corewar;
+//}						t_corewar;
 
 #endif
