@@ -6,7 +6,7 @@
 /*   By: lchety <lchety@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/29 15:05:43 by lchety            #+#    #+#             */
-/*   Updated: 2018/06/07 17:06:44 by jjourne          ###   ########.fr       */
+/*   Updated: 2018/06/10 18:25:48 by jjourne          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ typedef struct	s_mem //une case de la memoire
 	char	padding2;
 	char	padding3;
 	int		num;//du joueur
-	int		blingbling;//highlight
+	int		blingbling;//highlight pour ncurses
 	int		live;
 	int		pc;
 }				t_mem;
@@ -213,7 +213,7 @@ typedef struct	s_vm
 	int				verbosity;
 	int				winner;
 	int				lives_in_cycle;
-	t_mem			ram[MEM_SIZE];
+	t_mem			ram[MEM_SIZE]; //
 	int				life_signal[4];
 	char			*files_name[5];
 	t_player		player[5];

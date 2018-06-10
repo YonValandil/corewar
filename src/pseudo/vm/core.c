@@ -1,23 +1,3 @@
-#include "corewar.h"
-
-void	exit_error(const char *s)
-{
-	ft_putendl_fd(s, 2);
-	exit(EXIT_FAILURE);
-}
-
-int		main(int argc, char *argv[])
-{
-	t_lemin		lemin;
-	t_room		*room;
-
-	(void)argv;
-	if (argc != 1)
-		exit_error("ERROR");
-
-	return (0);
-}
-
 //----------------------VM------------------------------------------------------
 
 //------------------les instructions-----------------
@@ -68,8 +48,9 @@ int		main(int argc, char *argv[])
 			//si le proc est actif, n l'execute => animate_proc()
 		//on augmente le nb de cycles passé
 		//ncurse*
+	//
 
-//animate_proc: return un void //rename => exec_proc() //2 questions !!!!!
+//exec_proc: return un void //2 questions !!!!!
 	//=====> toutes les fonctions utilisées:
 	// is_opcode()
 	// create_op()
