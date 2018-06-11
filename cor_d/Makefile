@@ -11,7 +11,7 @@
 # **************************************************************************** #
 .PHONY: all, clean, fclean, re
 
-CC = clang
+CC = gcc
 CFLAGS = -g -Wall -Werror -Wextra -Wunused
 VM_NAME = corewar
 ASM_NAME = asm
