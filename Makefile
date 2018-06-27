@@ -1,42 +1,104 @@
-CC =				gcc
-EXEC =				corewar
-SRC_DIR =			./src/
-OBJ_DIR =			./obj/
-HEADER_DIR =		./include/
-HEADER_LIBFT_DIR = 	./libft/include
-LIBFT_DIR = 		./libft/
-LIBFT =				$(LIBFT_DIR)libft.a
-CFLAGS =			-Wall -Werror -Wextra
-DEBUG_FLAGS =		-fsanitize=address -g
-ARFLAGS =			-rcs
-CFILES =			main
-HFILE =				./include/corewar.h
-SRC =				$(CFILES:%=$(SRC_DIR)%.c)
-OBJ =				$(CFILES:%=$(OBJ_DIR)%.o)
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: pde-rent <pde-rent@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2018/06/07 19:21:52 by pde-rent          #+#    #+#              #
+#    Updated: 2018/06/13 19:30:54 by jjourne          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-all: $(EXEC)
+NAME_1    	= asm
+NAME_2    	= corewar
+SRC_PATH	= srcs/
+OBJ_PATH	= objs/
+FLAGS		= -Wall -Werror -Wextra -g -fsanitize=address
+CC			= gcc $(FLAGS)
+NAME_P		= $(shell echo $(NAME_1) | tr ' ' '\n' | sed "s/\.[acoh]$///g" | tr '\n' ' ' | sed "s/ $///g")
+SRC_SUFFIX	= .c
 
-$(LIBFT):
-	make -C $(LIBFT_DIR)
+COMMON =	op
 
-$(EXEC): $(HFILE) $(LIBFT) $(OBJ)
-	$(CC) $(SRC) -I$(HEADER_DIR) -I$(HEADER_LIBFT_DIR) $(LIBFT) -o $@ $(CFLAGS) #$(DEBUG_FLAGS)
+# Common Files
+COMMON_FILES =	$(addsuffix $(SRC_SUFFIX),$(COMMON))
+SRC1_FILES = $(COMMON_FILES)
+SRC2_FILES = $(COMMON_FILES)
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HFILE)
-	mkdir -p $(OBJ_DIR)
-	$(CC) -I$(HEADER_DIR) -c $< -o $@
+SRC2_FILES += corewar.c
+SRC1_FILES += asm.c
 
-clean:
-	rm -rf $(OBJ_DIR)
-	@make -C $(LIBFT_DIR) clean
-	@echo clean $@ Done !
 
-fclean:	clean
-	rm -f $(EXEC)
-	@make -C $(LIBFT_DIR) fclean
-	@echo fclean $@ Done !
+OBJ1_FILES	= $(SRC1_FILES:.c=.o)
+OBJ2_FILES	= $(SRC2_FILES:.c=.o)
+SRC1		= $(addprefix $(SRC_PATH),$(SRC1_FILES))
+SRC2		= $(addprefix $(SRC_PATH),$(SRC2_FILES))
+OBJ1		= $(addprefix $(OBJ_PATH),$(OBJ1_FILES))
+OBJ2		= $(addprefix $(OBJ_PATH),$(OBJ2_FILES))
 
-re:		fclean all
+#color
+YELLOW		= "\\033[33m"
+BLUE		= "\\033[34m"
+RED			= "\\033[31m"
+WHITE		= "\\033[0m"
+CYAN		= "\\033[36m"
+GREEN		= "\\033[32m"
+BOLD		= "\\033[1m"
+PINK		= "\\033[95m"
 
-.PHONY: clean fclean re
-.SUFFIXES:
+#command
+EOLCLR		= "\\033[0K"
+#unicode
+CHECK		= "\\xE2\\x9C\\x94"
+OK			= " $(CYAN)$(CHECK)$(WHITE)"
+
+all : $(NAME_1) $(NAME_2)
+
+$(NAME_1) : $(OBJ1)
+	@printf "\r$(EOLCLR)[$(NAME_P)] >>>>>>>>>>>>>>\t$(YELLOW)$(BOLD)"\
+	"$(NAME_1) compiled\t"$(OK)'\n'
+	@ $(CC) -I./includes $(OBJ1) -o $@
+	@printf "\r$(EOLCLR)[$(NAME_P)] >>>>>>>>>>>>>>\t$(GREEN)$(BOLD)"\
+	"build successful\t"$(OK)'\n'
+
+$(NAME_2) : $(OBJ2)
+	@printf "\r$(EOLCLR)[$(NAME_P)] >>>>>>>>>>>>>>\t$(YELLOW)$(BOLD)"\
+	"checker compiled\t"$(OK)'\n'
+	@ $(CC) -I./includes $(OBJ2) -o $@
+	@printf "\r$(EOLCLR)[$(NAME_P)] >>>>>>>>>>>>>>\t$(GREEN)$(BOLD)"\
+	"build successful\t"$(OK)'\n'
+
+$(OBJ1) : | $(OBJ_PATH)
+$(OBJ2) : | $(OBJ_PATH)
+
+$(OBJ_PATH) :
+	@mkdir -p $(OBJ_PATH)
+
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	@printf "\r$(EOLCLR)[$(NAME_P)] compiling\t\t$(BOLD)$(YELLOW)$<$(WHITE)"
+	@$(CC) -I./includes -o $@ -c $<
+	@printf '\t'$(OK)
+
+libft :
+	@make -C ./printf
+
+clean :
+	@printf "[$(NAME_P)] removing\t\t$(PINK)all obj file$(WHITE)"
+	@rm -rf $(OBJ_PATH)
+	@make clean -C ./printf
+	@printf '\t\t'$(OK)'\n'
+
+fclean : clean
+	@printf "[$(NAME_P)] erasing\t\t$(PINK)$(NAME_1)$(WHITE)"
+	@rm -f $(NAME_1)
+	@rm -f $(NAME_2)
+	@make fclean ./printf
+	@printf '\t\t'$(OK)'\n'
+
+re : fclean all
+
+norm :
+	@norminette srcs/ include/
+
+.PHONY: all clean fclean re norm
